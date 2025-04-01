@@ -23,7 +23,8 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 
 func testHandler(w http.ResponseWriter, r *http.Request) {
 	data := map[string]string{
-		"name": "Test endpoint",
+		"name":    "Test endpoint",
+		"success": "true",
 	}
 	response, err := json.Marshal(data)
 	if err != nil {
