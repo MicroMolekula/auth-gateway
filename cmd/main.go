@@ -22,7 +22,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/api", helloHandler)
+	http.HandleFunc("/", helloHandler)
 	fmt.Println("Сервер запущен на порту 8000")
 	if err := http.ListenAndServe(":8000", nil); err != nil {
 		log.Fatal(err)
