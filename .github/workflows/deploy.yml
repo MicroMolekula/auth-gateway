@@ -1,0 +1,14 @@
+#name: "Auth gateway deploy"
+#on:
+#  push:
+#    branches: ['main']
+#  pull_request:
+#    branches: ['main']
+#
+#jobs:
+#  deploy:
+#    runs-on: ubuntu-latest
+#    if: github.ref == 'refs/heads/main'
+#    steps:
+#      - name: Checkout Code
+#        uses: actions/checkout@v3
