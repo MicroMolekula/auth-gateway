@@ -10,7 +10,7 @@ import (
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	data := map[string]string{
 		"name":    "Auth Gateway",
-		"version": "0.0",
+		"version": "0.1",
 	}
 	response, err := json.Marshal(data)
 	if err != nil {
