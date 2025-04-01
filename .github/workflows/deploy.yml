@@ -23,4 +23,4 @@ jobs:
             git checkout main
             git pull
             make down
-            make run
+            make up
