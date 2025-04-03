@@ -1,0 +1,8 @@
+server:
+  host: '0.0.0.0'
+  port: '8080'
+
+domains:
+  auth: "localhost:83"
+  symfony: "localhost:80"
+  go: "localhost:81"
