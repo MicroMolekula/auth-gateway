@@ -25,6 +25,10 @@ func NewProxy(domain string, location string, handler func(host string, urlReque
 
 func (p *Proxy) Handle() {
 	http.HandleFunc(p.location, func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", config.Cfg.CORS)
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		w.Header().Set("Access-Control-Allow-Methods", "POST,HEAD,PATCH, OPTIONS, GET, PUT")
 		serviceData, err := p.handler(p.host, r.URL.String())
 		if err != nil {
 			SendErrorJSON(err, w)
@@ -37,10 +41,6 @@ func (p *Proxy) Handle() {
 		}
 		proxy := httputil.NewSingleHostReverseProxy(serviceData.Url)
 		r.Header.Set("Authorization", serviceData.Authorization)
-		r.Header.Set("Access-Control-Allow-Origin", config.Cfg.CORS)
-		r.Header.Set("Access-Control-Allow-Credentials", "true")
-		r.Header.Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		r.Header.Set("Access-Control-Allow-Methods", "POST,HEAD,PATCH, OPTIONS, GET, PUT")
 		proxy.ServeHTTP(w, r)
 	})
 }
