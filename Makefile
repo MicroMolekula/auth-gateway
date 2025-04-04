@@ -8,3 +8,5 @@ up:
 down:
 	docker stop auth-gateway
 	docker remove auth-gateway
+local-run:
+	CONFIG_PATH='./configs/dev.yml' go run cmd/main.go
