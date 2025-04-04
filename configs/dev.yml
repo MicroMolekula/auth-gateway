@@ -6,3 +6,5 @@ domains:
   auth: "localhost:83"
   symfony: "localhost:80"
   go: "localhost:81"
+
+cors: '*'

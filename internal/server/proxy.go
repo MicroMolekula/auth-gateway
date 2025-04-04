@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"github.com/MicroMolekula/auth-gateway/internal/config"
 	"github.com/MicroMolekula/auth-gateway/internal/model"
 	"github.com/MicroMolekula/auth-gateway/internal/utils"
 	"net/http"
@@ -36,6 +37,10 @@ func (p *Proxy) Handle() {
 		}
 		proxy := httputil.NewSingleHostReverseProxy(serviceData.Url)
 		r.Header.Set("Authorization", serviceData.Authorization)
+		r.Header.Set("Access-Control-Allow-Origin", config.Cfg.CORS)
+		r.Header.Set("Access-Control-Allow-Credentials", "true")
+		r.Header.Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		r.Header.Set("Access-Control-Allow-Methods", "POST,HEAD,PATCH, OPTIONS, GET, PUT")
 		proxy.ServeHTTP(w, r)
 	})
 }

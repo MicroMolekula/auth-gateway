@@ -11,6 +11,7 @@ import (
 type Config struct {
 	Server  `yaml:"server"`
 	Domains map[string]string `yaml:"domains"`
+	CORS    string            `yaml:"cors"`
 }
 
 type Server struct {
