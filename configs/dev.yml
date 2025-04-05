@@ -5,7 +5,7 @@ server:
 domains:
   auth: "auth:8080"
   symfony: "symfony:80"
-  go: "localhost:81"
+  go: "gpt:8081"
 
 cors: '*'
 

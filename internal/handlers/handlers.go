@@ -29,3 +29,11 @@ func SymfonyHandler(host string, urlRequest string, authorization string) (*mode
 	}
 	return model.NewServiceData(path, authorization), nil
 }
+
+func GPTHandler(host string, urlRequest string, authorization string) (*model.ServiceData, error) {
+	path, err := url.Parse(fmt.Sprintf("http://%s/", host))
+	if err != nil {
+		return nil, err
+	}
+	return model.NewServiceData(path, authorization), nil
+}

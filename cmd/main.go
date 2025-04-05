@@ -15,9 +15,11 @@ func main() {
 	}
 	symfonyProxy := server.NewProxy(cfg.Domains["symfony"], "/symfony/", handlers.SymfonyHandler)
 	authProxy := server.NewProxy(cfg.Domains["auth"], "/auth/", handlers.AuthHandler)
+	gptProxy := server.NewProxy(cfg.Domains["go"], "/fitness/", handlers.GPTHandler)
 	serv := server.NewServer(cfg)
 	serv.AddProxy(symfonyProxy)
 	serv.AddProxy(authProxy)
+	serv.AddProxy(gptProxy)
 	serv.HandleProxies()
 	serv.Start()
 }
