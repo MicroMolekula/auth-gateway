@@ -50,6 +50,7 @@ func (p *Proxy) Handle() {
 		}
 		if serviceData.Authorization != "" {
 			token, _ := strings.CutPrefix(serviceData.Authorization, "Bearer ")
+			fmt.Println(token)
 			userId, err := service.VerifyToken(token)
 			if err != nil {
 				SendErrorJSON(err, w)
@@ -60,7 +61,6 @@ func (p *Proxy) Handle() {
 		proxy := httputil.NewSingleHostReverseProxy(serviceData.Url)
 		r.Header.Set("Authorization", serviceData.Authorization)
 		r.Header.Set("x-user-id", strconv.Itoa(serviceData.UserId))
-		fmt.Println(r.Header)
 		proxy.ServeHTTP(w, r)
 	})
 }
@@ -72,6 +72,7 @@ func SendErrorJSON(err error, w http.ResponseWriter) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	w.WriteHeader(http.StatusInternalServerError)
 	if _, err = w.Write(errResponse); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
