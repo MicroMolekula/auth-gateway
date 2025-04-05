@@ -12,6 +12,11 @@ type Config struct {
 	Server  `yaml:"server"`
 	Domains map[string]string `yaml:"domains"`
 	CORS    string            `yaml:"cors"`
+	JWT     `yaml:"jwt"`
+}
+
+type JWT struct {
+	Secret string `yaml:"secret"`
 }
 
 type Server struct {

@@ -2,20 +2,24 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/MicroMolekula/auth-gateway/internal/config"
 	"github.com/MicroMolekula/auth-gateway/internal/model"
+	"github.com/MicroMolekula/auth-gateway/internal/service"
 	"github.com/MicroMolekula/auth-gateway/internal/utils"
 	"net/http"
 	"net/http/httputil"
+	"strconv"
+	"strings"
 )
 
 type Proxy struct {
 	host     string
 	location string
-	handler  func(host string, urlRequest string) (*model.ServiceData, error)
+	handler  func(host string, urlRequest string, authorization string) (*model.ServiceData, error)
 }
 
-func NewProxy(domain string, location string, handler func(host string, urlRequest string) (*model.ServiceData, error)) *Proxy {
+func NewProxy(domain string, location string, handler func(host string, urlRequest string, authorization string) (*model.ServiceData, error)) *Proxy {
 	return &Proxy{
 		host:     domain,
 		location: location,
@@ -33,24 +37,36 @@ func (p *Proxy) Handle() {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
-
-		serviceData, err := p.handler(p.host, r.URL.String())
+		newUrl, err := utils.CutLocationFromUrl(r.URL, p.location)
 		if err != nil {
 			SendErrorJSON(err, w)
 			return
 		}
-		r.URL, err = utils.CutLocationFromUrl(r.URL, p.location)
+		r.URL = newUrl
+		serviceData, err := p.handler(p.host, r.URL.String(), r.Header.Get("Authorization"))
 		if err != nil {
 			SendErrorJSON(err, w)
 			return
+		}
+		if serviceData.Authorization != "" {
+			token, _ := strings.CutPrefix(serviceData.Authorization, "Bearer ")
+			userId, err := service.VerifyToken(token)
+			if err != nil {
+				SendErrorJSON(err, w)
+				return
+			}
+			serviceData.UserId = userId
 		}
 		proxy := httputil.NewSingleHostReverseProxy(serviceData.Url)
 		r.Header.Set("Authorization", serviceData.Authorization)
+		r.Header.Set("x-user-id", strconv.Itoa(serviceData.UserId))
+		fmt.Println(r.Header)
 		proxy.ServeHTTP(w, r)
 	})
 }
 
 func SendErrorJSON(err error, w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "application/json")
 	errResponse, err := json.Marshal(map[string]string{"error": err.Error()})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

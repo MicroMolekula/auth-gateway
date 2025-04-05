@@ -6,18 +6,26 @@ import (
 	"net/url"
 )
 
-func AuthHandler(host string, urlRequest string) (*model.ServiceData, error) {
+func AuthHandler(host string, urlRequest string, authorization string) (*model.ServiceData, error) {
+	switch urlRequest {
+	case "/login":
+		authorization = ""
+	case "/register":
+		authorization = ""
+	case "/refresh_token":
+		authorization = ""
+	}
 	path, err := url.Parse(fmt.Sprintf("http://%s/", host))
 	if err != nil {
 		return nil, err
 	}
-	return model.NewServiceData(path, "Bearer "), nil
+	return model.NewServiceData(path, authorization), nil
 }
 
-func SymfonyHandler(host string, urlRequest string) (*model.ServiceData, error) {
+func SymfonyHandler(host string, urlRequest string, authorization string) (*model.ServiceData, error) {
 	path, err := url.Parse(fmt.Sprintf("http://%s/", host))
 	if err != nil {
 		return nil, err
 	}
-	return model.NewServiceData(path, "Bearer "), nil
+	return model.NewServiceData(path, authorization), nil
 }
