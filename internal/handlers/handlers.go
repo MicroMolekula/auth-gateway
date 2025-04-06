@@ -23,6 +23,10 @@ func AuthHandler(host string, urlRequest string, authorization string) (*model.S
 }
 
 func SymfonyHandler(host string, urlRequest string, authorization string) (*model.ServiceData, error) {
+	switch urlRequest {
+	case "/exercises/search":
+		authorization = ""
+	}
 	path, err := url.Parse(fmt.Sprintf("http://%s/", host))
 	if err != nil {
 		return nil, err
